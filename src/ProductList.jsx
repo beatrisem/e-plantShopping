@@ -1,10 +1,13 @@
 import React, { useState,useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
 import './ProductList.css'
 import CartItem from './CartItem';
 function ProductList() {
+    const [addedToCart, setAddedToCart] = useState({});
     const [showCart, setShowCart] = useState(false); 
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-
+    const dispatch = useDispatch();
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -232,6 +235,14 @@ function ProductList() {
     fontSize: '30px',
     textDecoration: 'none',
    }
+   const handleAddToCart = (product) => {
+    dispatch(addItem(product)); // Dispatch the product to the redux store
+    setAddedToCart((prevState) => ({
+        ...prevState,
+        [product.name]: true, // Mark the product as added
+        }));
+    };
+
    const handleCartClick = (e) => {
     e.preventDefault();
     setShowCart(true); // Set showCart to true when cart icon is clicked
@@ -268,6 +279,28 @@ const handlePlantsClick = (e) => {
         </div>
         {!showCart? (
         <div className="product-grid">
+            {plantsArray.map((category, index) => (
+                <div key={index}>
+                    <h1><div>{category.category}</div></h1>
+                    <div className="product-list">
+                        {category.plants.map((plant, plantIndex) => (
+                    <div className="product-card" key={plantIndex}>
+                    <img className="product-image" src={plant.image} alt={plant.name} />
+                    <div className="product-title">{plant.name}</div>
+                    <div className="product-description">{plant.description}</div>
+                    <div className="product-cost">{plant.cost}</div>
+                    <button
+                        className="product-button"
+                        onClick={() => handleAddToCart(plant)}
+                        disabled={addedToCart[plant.name]} // Disable the button if the product is already in the cart
+                    >
+                    {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                    </button>
+                </div>
+            ))}
+        </div>
+    </div>
+    ))}
 
 
         </div>
