@@ -9,11 +9,10 @@ const CartItem = ({ onContinueShopping }) => {
 
   const calculateTotalAmount = () => {
     return cart.reduce((total, item) => {
-      // Convert cost to a number before multiplying
-      return total + (Number(item.cost) * item.quantity);
-    }, 0).toFixed(2); // toFixed(2) to format the result as a string with 2 decimal places
-  };
-
+        // Convert cost to a number before multiplication
+        return total + (Number(item.cost.slice(1)) * item.quantity); // Remove $ and convert to number
+      }, 0);
+};
   // Handle "Continue Shopping" button click
   const handleContinueShopping = () => {
     onContinueShopping(); // Call the function passed from the parent component
@@ -38,9 +37,9 @@ const CartItem = ({ onContinueShopping }) => {
     dispatch(removeItem(item.name));
   };
 
-  // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
-    return (item.quantity * Number(item.cost)).toFixed(2); // Convert cost to a number, then multiply, and format to 2 decimal places
+    // Convert item cost to number, multiply by quantity, and format to 2 decimal places
+    return item.quantity * Number(item.cost.slice(1)); 
 };
 
   // Calculate total quantity
@@ -58,7 +57,7 @@ const CartItem = ({ onContinueShopping }) => {
             <img className="cart-item-image" src={item.image} alt={item.name} />
             <div className="cart-item-details">
               <div className="cart-item-name">{item.name}</div>
-              <div className="cart-item-cost">Cost: ${item.cost}</div>
+              <div className="cart-item-cost">Cost: {item.cost}</div>
               <div className="cart-item-quantity">
                 <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
                 <span className="cart-item-quantity-value">{item.quantity}</span>
